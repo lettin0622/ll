@@ -1,4 +1,3 @@
-
 // Hand Pose Detection with ml5.js
 // https://thecodingtrain.com/tracks/ml5js-beginners-guide/ml5/hand-pose
 
@@ -20,12 +19,16 @@ function gotHands(results) {
 }
 
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(windowWidth, windowHeight);
   video = createCapture(VIDEO, { flipped: true });
   video.hide();
 
   // Start detecting hands
   handPose.detectStart(video, gotHands);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
@@ -36,13 +39,21 @@ function draw() {
   textAlign(CENTER, TOP);
   textSize(32);
   fill(0, 60, 120);
-  text('ＴＫＵＥＴ　ＴＥＳＴ', width / 2, 10);
+  text('ＴＫＵＥＴ小測驗', width / 2, 20);
 
-  // 計算視訊顯示區域（約視窗 70%，置中）
+  // 計算標題高度與間距
+  let titleH = 32 + 20; // 字高+間距
+
+  // 計算視訊顯示區域（約視窗 70%，置中，且不與標題碰撞）
   let vidW = width * 0.7;
   let vidH = video.height * (vidW / video.width);
+  // 若高度超過下方空間，則以高度為主縮放
+  if (vidH > height - titleH - 40) {
+    vidH = height - titleH - 40;
+    vidW = video.width * (vidH / video.height);
+  }
   let vidX = (width - vidW) / 2;
-  let vidY = (height - vidH) / 2 + 20; // 下移避免標題
+  let vidY = titleH + ((height - titleH) - vidH) / 2;
 
   image(video, vidX, vidY, vidW, vidH);
 
